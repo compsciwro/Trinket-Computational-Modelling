@@ -1,0 +1,53 @@
+GlowScript 2.7 VPython
+
+scene.background = vector(255/255, 204/255, 255/255)
+Ceiling = box(pos=vector(0, 8, 0), size=vector(8, 1, 8), color=vector(255/255, 153/255, 255/255), vel=vector(0,0,0), acc=vector(0,0,0), mass=0, charge=0)
+
+Ball = sphere(pos=vector(0, 1, 0), axis=vector(0, 1, 0), radius=1, color=vector(255/255, 255/255, 255/255), vel=vector(0,0,0), acc=vector(0,0,0), mass=0, charge=0)
+
+Spring = helix(pos=vector(0, Ceiling.pos.y, 0), axis=vector(0, (Ball.pos.y - Ceiling.pos.y), 0), radius=1, length=7, thickness=0.075, size=vector(1, 1, 1), color=vector(102/255, 51/255, 102/255), vel=vector(0,0,0), acc=vector(0,0,0), mass=0, charge=0)
+
+Displacement_Graph = graph(title='X vs T', xtitle='time (s)', ytitle='position (m)')
+XModel = gdots(color=vector(204/255, 204/255, 255/255))
+
+Velocity_Graph = graph(title='V vs T', xtitle='time (s)', ytitle='velocity (m/s)')
+VModel = gdots(color=vector(153/255, 153/255, 255/255))
+
+Acceleration_Graph = graph(title='A vs T', xtitle='time (s)', ytitle='acceleration (m/s^2)')
+AModel = gdots(color=vector(102/255, 102/255, 204/255))
+
+g = 9.8
+k = 18
+Mass = 0.2
+Time = 0
+TMax = 10
+h = 0.01
+B = 0.2
+Unsteched = 8
+InitialVel = 0
+Velocity = 0
+Spring_Force = -k * Ball.pos.y
+Damping_Force = -B * Velocity
+Fg = g * Mass
+Fnet = (Fg + Damping_Force) + Spring_Force
+Acceleration = Fnet / Mass
+Ball.pos.y = Ball.pos.y + Velocity * h
+Velocity = InitialVel + h * Acceleration
+XModel.plot(Time,Ball.pos.y)
+VModel.plot(Time,Velocity)
+AModel.plot(Time,Acceleration)
+while Time <= TMax:
+  rate(200 , wait)
+  Time = Time + h
+  InitialVel = Velocity
+  Spring_Force = -k * Ball.pos.y
+  Damping_Force = -B * Velocity
+  Fg = g * Mass
+  Fnet = (Fg + Damping_Force) + Spring_Force
+  Acceleration = Fnet / Mass
+  Velocity = InitialVel + h * Acceleration
+  Ball.pos.y = Ball.pos.y + Velocity * h
+  Spring.size.x = Unsteched - Ball.pos.y
+  XModel.plot(Time,Ball.pos.y)
+  VModel.plot(Time,Velocity)
+  AModel.plot(Time,Acceleration)
